@@ -21,8 +21,10 @@ app.use(express.json());
 app.use(limiter);
 
 // Define a secret key for JWT
+//TODO: To be secured. 
 const secretKey = 'whatamidoing';
 app.post('/token',(req,res) => {
+    //TODO: fetch user details in prod. using dummy user for dev
     const token = jwt.sign("yellow",secretKey);
     res.json({accessToken: token})
 })
@@ -63,7 +65,10 @@ const SensorData = sequelize.define('sensor-data',{
 
 //await returns a promise object we need to use it with async
 app.get('/data', async (req,res) => {
-    const allData = await SensorData.findAll();
+    //pagination,default 5 if no param key with limit is defined
+    let limit = req.query.limit || 5;
+    let offset = req.query.offset || 0;
+    const allData = await SensorData.findAll({limit,offset});
     res.status(200).send(allData);
     return;
 })
