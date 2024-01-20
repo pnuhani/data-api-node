@@ -5,3 +5,8 @@ Basic API for node.js
 we have defined model sensor-data in index.js
 // Sync the model with the database
 sequelize.sync();
+
+other production Ready aspects
+compression
+helment
+express-rate-limit

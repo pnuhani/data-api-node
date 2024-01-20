@@ -1,12 +1,23 @@
 const express = require('express')
 require('dotenv').config();
 const {Sequelize, DataTypes} = require('sequelize')
+const helmet = require('helmet')
+const compression = require('compression')
+const rateLimit = require("express-rate-limit")
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres'
 })
+
+const limiter = rateLimit({
+    windowMs: 1*60*1000, //1 minute
+    max:10 //limit each IP to 10 req per windowMs
+});
 //initialize
 const app = express();
+app.use(helmet());
+app.use(compression());
 app.use(express.json());
+app.use(limiter);
 
 //defining model
 
@@ -25,6 +36,8 @@ const SensorData = sequelize.define('sensor-data',{
     }
 
 })
+
+
 
 //await returns a promise object we need to use it with async
 app.get('/data', async (req,res) => {
