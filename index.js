@@ -4,6 +4,7 @@ const {Sequelize, DataTypes} = require('sequelize')
 const helmet = require('helmet')
 const compression = require('compression')
 const rateLimit = require("express-rate-limit")
+const jwt = require('jsonwebtoken')
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres'
 })
@@ -18,6 +19,27 @@ app.use(helmet());
 app.use(compression());
 app.use(express.json());
 app.use(limiter);
+
+// Define a secret key for JWT
+const secretKey = 'whatamidoing';
+app.post('/token',(req,res) => {
+    const token = jwt.sign("yellow",secretKey);
+    res.json({accessToken: token})
+})
+
+
+app.use((req, res, next) =>{
+    const token = req.headers['authorization'];
+    if (!token) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+    jwt.verify(token, secretKey, (err, user) => {
+        if (err) {
+          return res.status(403).json({ error: 'Forbidden' });
+        }
+    next();
+});
+});
 
 //defining model
 

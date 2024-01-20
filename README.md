@@ -9,4 +9,5 @@ sequelize.sync();
 other production Ready aspects
 compression
 helment
-express-rate-limit
+express-rate-limit 
+JWT token for dummy authorization
