@@ -1,0 +1,56 @@
+openapi: 3.0.0
+info:
+  title: Data API
+  version: 1.0.0
+tags:
+  - name: Data - API
+    description: Get and post Description
+paths:
+  /data:
+    post:
+      summary: Create a new item and save in DB
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: John Doe
+                date:
+                  type: string
+                  format: date
+                  example: 2022-01-28
+                noOfYear:
+                  type: integer
+                  minimum: 0
+                  maximum: 60
+                  example: 5
+                risk-level:
+                  type: string
+                  enum:
+                    - low
+                    - medium
+                    - high
+                  example: medium
+      responses:
+        '201':
+          description: Item created successfully
+        '401':
+          description: Unauthorized - Token not provided or invalid
+      parameters:
+        - in: header
+          name: Authorization
+          description: Access JWT token
+          required: true
+          schema:
+            type: string
+            format: uuid 
+        - in: header
+          name: Content-Type
+          description: Json
+          required: true
+          example: application/json
+          schema:
+            type: string
