@@ -27,7 +27,7 @@ paths:
                   minimum: 0
                   maximum: 60
                   example: 5
-                risk-level:
+                riskLvl:
                   type: string
                   enum:
                     - low
@@ -46,7 +46,6 @@ paths:
           required: true
           schema:
             type: string
-            format: uuid 
         - in: header
           name: Content-Type
           description: Json
