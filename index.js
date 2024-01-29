@@ -21,7 +21,7 @@ app.use(limiter);
 
 // Define a secret key for JWT
 //TODO: To be secured. 
-const secretKey = 'whatamidoing';
+const secretKey = process.env.SECRET_KEY ||'whatamidoing';
 app.post('/token',(req,res) => {
     //TODO: fetch user details in prod. using dummy user for dev
     const token = jwt.sign("yellow",secretKey);
