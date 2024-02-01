@@ -14,3 +14,4 @@ other production Ready aspects
 5. pagination - default 5
 6. Swagger yaml documentation
 7. Swagger - api Validation - schema type
+8. logging Error in a file for now , to process later
