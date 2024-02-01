@@ -1,7 +1,6 @@
 const express = require('express')
+const util = require('./utill'); 
 require('dotenv').config();
-//const SensorData = require("./sequelizeFile")
-//const sequelize = require("./sequelizeFile")
 const helmet = require('helmet')
 const compression = require('compression')
 const rateLimit = require("express-rate-limit")
@@ -67,13 +66,6 @@ app.use((req, res, next) =>{
           return res.status(403).json({ error: 'Forbidden' });
         }
         req.user = user;
-        // res.status(statusCode).json({
-        //     error: {
-        //       name: err.name,
-        //       message: err.message,
-        //       data: err.data,
-        //     },
-        //   })
     next();
 });
 });
@@ -91,10 +83,22 @@ app.get('/data',
 app.post('/data', 
     validator.validate("post", '/data'),
     async (req,res) => {
-    let data = req.body;
-    const sensorData = await SensorData.create(data);
-    res.status(201).send(sensorData);
-    return;
+        try{
+            let data = req.body;
+            const sensorData = await SensorData.create(data);
+            res.status(201).send(sensorData);
+            return;
+        }
+        catch(error){
+            console.error('Error processing the request:', error);
+            //Error handling
+            //TODO: 1. handling errors in a file for now , to implement in a seperate kafka topic later
+            //      2. Recovery pendinf to reprocess these messages 
+            util.writeRequestBodyToFile(req.body, process.env.FILE_PATH || "./recoverable_errors.json");
+            res.status(500).send('Internal Server Error');
+            
+        }
+  
 })
 
 app.listen({port:8080},()=> {
